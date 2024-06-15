@@ -5,3 +5,5 @@ Features:
 - Delete File
 - List File
 - Read File
+- Copy
+- Rename

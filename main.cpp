@@ -53,17 +53,33 @@ void listFiles(const string& directory) {
             auto cftime = system_clock::to_time_t(sctp);
 
             cout << "File Information:" << endl;
-            cout << "- Name: " << path.filename() << endl;
-            cout << "- Size: " << fileSize << " bytes" << endl;
-            cout << "- Location: " << absolute(path) << endl;
-            cout << "- Last Modified: " << put_time(localtime(&cftime), "%F %T") << endl;
-            // Since creation time is not supported by the filesystem library, we will use last write time as a substitute
-            cout << "   Last Accessed: " << put_time(localtime(&cftime), "%F %T") << endl;
-            cout << "- Type: " << (path.extension() == ".txt" ? "Text file" : "Other file") << endl;
+            cout << "a. Name: " << path.filename() << endl;
+            cout << "b. Size: " << fileSize << " bytes" << endl;
+            cout << "c. Location: " << absolute(path) << endl;
+            cout << "d. Last Modified: " << put_time(localtime(&cftime), "%F %T") << endl;
+            cout << "e. Type: " << (path.extension() == ".txt" ? "Text file" : "Other file") << endl;
             cout << "-----------------------" << endl;
         }
     } catch (const exception& ex) {
         cerr << "Error listing files: " << ex.what() << endl;
+    }
+}
+
+void copyFile(const string& srcFilename, const string& destFilename) {
+    try {
+        copy(srcFilename, destFilename);
+        cout << "File copied successfully: " << srcFilename << " to " << destFilename << endl;
+    } catch (const exception& ex) {
+        cerr << "Failed to copy file: " << ex.what() << endl;
+    }
+}
+
+void renameFile(const string& oldFilename, const string& newFilename) {
+    try {
+        rename(oldFilename, newFilename);
+        cout << "File renamed successfully: " << oldFilename << " to " << newFilename << endl;
+    } catch (const exception& ex) {
+        cerr << "Failed to rename file: " << ex.what() << endl;
     }
 }
 
@@ -73,12 +89,14 @@ void displayMenu() {
     cout << "2. Read a file" << endl;
     cout << "3. List all files in the directory" << endl;
     cout << "4. Delete a file" << endl;
+    cout << "5. Copy a file" << endl;
+    cout << "6. Rename a file" << endl;
     cout << "Enter your choice: ";
 }
 
 int main() {
     int choice;
-    string filename, content;
+    string filename, content, srcFilename, destFilename, oldFilename, newFilename;
     const string directory = "."; // Current directory
 
     while (true) {
@@ -107,6 +125,20 @@ int main() {
                 cout << "Enter the name of the file to delete: ";
                 cin >> filename;
                 deleteFile(filename);
+                break;
+            case 5:
+                cout << "Enter the name of the source file to copy: ";
+                cin >> srcFilename;
+                cout << "Enter the name of the destination file: ";
+                cin >> destFilename;
+                copyFile(srcFilename, destFilename);
+                break;
+            case 6:
+                cout << "Enter the current name of the file to rename: ";
+                cin >> oldFilename;
+                cout << "Enter the new name of the file: ";
+                cin >> newFilename;
+                renameFile(oldFilename, newFilename);
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
